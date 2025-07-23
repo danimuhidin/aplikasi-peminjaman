@@ -50,26 +50,26 @@ export default function PeminjamanPage() {
 
   // Handler untuk klik slot waktu kosong (menambah event baru)
   const handleDateSelect = (selectInfo: DateSelectArg) => { // <-- UBAH KE DateSelectArg
-  // console.log('selectInfo:', selectInfo);
-  setCurrentEventTitle('');
-  setCurrentEventStart(selectInfo.startStr);
-  setCurrentEventEnd(selectInfo.endStr);
-  setEditingEventId(null); // Mode tambah
-  setIsModalOpen(true);
-  setAlertMessage(null); // Clear previous alert
-};
+    console.log('Tanggal dipilih:', selectInfo);
+    setCurrentEventTitle('');
+    setCurrentEventStart(selectInfo.startStr);
+    setCurrentEventEnd(selectInfo.endStr);
+    setEditingEventId(null); // Mode tambah
+    setIsModalOpen(true);
+    setAlertMessage(null); // Clear previous alert
+  };
 
   // Handler untuk klik event yang sudah ada (mengedit event)
   const handleEventClick = (clickInfo: EventClickArg) => { // <-- UBAH JUGA KE EventClickArg
-  // console.log('clickInfo:', clickInfo);
-  const event = clickInfo.event;
-  setCurrentEventTitle(event.title);
-  setCurrentEventStart(event.startStr);
-  setCurrentEventEnd(event.endStr || ''); // Mungkin tidak ada end date untuk all-day
-  setEditingEventId(event.id); // Mode edit
-  setIsModalOpen(true);
-  setAlertMessage(null); // Clear previous alert
-};
+    // console.log('clickInfo:', clickInfo);
+    const event = clickInfo.event;
+    setCurrentEventTitle(event.title);
+    setCurrentEventStart(event.startStr);
+    setCurrentEventEnd(event.endStr || ''); // Mungkin tidak ada end date untuk all-day
+    setEditingEventId(event.id); // Mode edit
+    setIsModalOpen(true);
+    setAlertMessage(null); // Clear previous alert
+  };
 
   // Handler untuk menyimpan/menambah event
   const handleSaveEvent = () => {
@@ -104,36 +104,50 @@ export default function PeminjamanPage() {
     }
   };
 
+  const handleOpenAddModal = () => {
+    // Ketika membuka modal dari tombol tambah, inisialisasi tanggal dengan tanggal saat ini
+    const now = new Date();
+    const isoString = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().substring(0, 16);
+
+    setCurrentEventTitle('');
+    setCurrentEventStart(isoString); // Atur tanggal mulai ke tanggal dan waktu saat ini
+    setCurrentEventEnd('');
+    setEditingEventId(null);
+    setIsModalOpen(true);
+    setAlertMessage(null);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen font-sans p-4 pb-20">
-      <h1 className="text-2xl text-center font-bold text-white mb-2">Halaman Peminjaman</h1>
-      <p className="text-sm text-white mb-8 text-center max-w-xl">
-        Kelola jadwal peminjaman barang di sini. Klik pada tanggal kosong untuk menambah, atau klik pada event untuk melihat/mengedit.
-      </p>
+    <div className="flex flex-col justify-start min-h-screen font-sans pb-20">
+      <div className='border-b lg:border-none border-gray-400 mb-6 p-3'>
+        <h1 className="text-lg lg:text-2xl text-left lg:text-center font-bold text-white">Data Peminjaman</h1>
+      </div>
 
       {/* Kontainer untuk FullCalendar */}
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl p-6 mb-8">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          }}
-          initialView="dayGridMonth"
-          editable={true} // Memungkinkan event bisa di-drag & resize (bisa diimplementasikan)
-          selectable={true} // Memungkinkan pengguna memilih rentang waktu
-          selectMirror={true}
-          dayMaxEvents={true}
-          weekends={true}
-          initialEvents={events} // Gunakan state events
-          select={handleDateSelect} // Ketika memilih rentang waktu kosong
-          eventClick={handleEventClick} // Ketika mengklik event yang sudah ada
+      <div className="flex item-center justify-center w-full p-4">
+        <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl p-6 mb-8">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: 'prev',
+              center: 'title',
+              right: 'next',
+            }}
+            initialView="dayGridMonth"
+            editable={true} // Memungkinkan event bisa di-drag & resize (bisa diimplementasikan)
+            selectable={true} // Memungkinkan pengguna memilih rentang waktu
+            selectMirror={true}
+            dayMaxEvents={true}
+            weekends={true}
+            initialEvents={events} // Gunakan state events
+            select={handleDateSelect} // Ketika memilih rentang waktu kosong
+            eventClick={handleEventClick} // Ketika mengklik event yang sudah ada
           // Event handlers lainnya (opsional):
           // eventChange={handleEventChange} // Ketika event di-drag atau di-resize
           // eventAdd={handleEventAdd} // Ketika event baru ditambahkan (setelah drag-n-drop dari eksternal)
           // eventRemove={handleEventRemove} // Ketika event dihapus
-        />
+          />
+        </div>
       </div>
 
       {/* Modal Tambah/Edit Peminjaman */}
@@ -156,7 +170,29 @@ export default function PeminjamanPage() {
             )}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
-                Judul Peminjaman
+                Peminjam
+              </Label>
+              <Input
+                id="title"
+                value={currentEventTitle}
+                onChange={(e) => setCurrentEventTitle(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Barang
+              </Label>
+              <Input
+                id="title"
+                value={currentEventTitle}
+                onChange={(e) => setCurrentEventTitle(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Jumlah
               </Label>
               <Input
                 id="title"
@@ -179,7 +215,7 @@ export default function PeminjamanPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="end" className="text-right">
-                Selesai (Opsional)
+                Selesai
               </Label>
               <Input
                 id="end"
@@ -193,9 +229,9 @@ export default function PeminjamanPage() {
           </div>
           <DialogFooter className="flex flex-col sm:flex-row sm:justify-between sm:space-x-2">
             {editingEventId && (
-                <Button variant="destructive" onClick={handleDeleteEventFromModal} className="w-full sm:w-auto mb-2 sm:mb-0">
-                    Hapus Peminjaman
-                </Button>
+              <Button variant="destructive" onClick={handleDeleteEventFromModal} className="w-full sm:w-auto mb-2 sm:mb-0">
+                Hapus Peminjaman
+              </Button>
             )}
             <Button onClick={handleSaveEvent} className="w-full sm:w-auto">
               {editingEventId ? 'Simpan Perubahan' : 'Tambah Peminjaman'}
@@ -203,7 +239,16 @@ export default function PeminjamanPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-            <BottomNavbar />
+
+      <Button
+        className="fixed bottom-24 right-8 rounded-full h-16 w-16 text-white text-3xl shadow-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105
+             md:hidden" // <-- INI YANG PENTING!
+        onClick={handleOpenAddModal}
+      >
+        +
+      </Button>
+
+      <BottomNavbar />
     </div>
   );
 }

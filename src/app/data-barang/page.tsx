@@ -107,45 +107,50 @@ export default function DataBarangPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen font-sans p-4 pb-20"> {/* pb-20 untuk memberi ruang navbar bawah */}
-      <h1 className="text-2xl text-center font-bold text-white mb-2">Halaman Data Barang</h1>
-      <p className="text-sm text-white mb-8 text-center max-w-xl">
-        Ini adalah halaman untuk mengelola inventaris dan informasi detail barang.
-      </p>
+    <div className="flex flex-col justify-start min-h-screen font-sans pb-20"> {/* pb-20 untuk memberi ruang navbar bawah */}
+      <div className='border-b lg:border-none border-gray-400 mb-6 p-3'>
+        <h1 className="text-lg lg:text-2xl text-left lg:text-center font-bold text-white">Data Barang</h1>
+      </div>
 
       {/* List Data Barang */}
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        {barangList.length === 0 ? (
-          <p className="text-center text-gray-500">Belum ada data barang.</p>
-        ) : (
-          <ul className="space-y-4">
-            {barangList.map((barang) => (
-              <li
-                key={barang.id}
-                className="flex items-center justify-between p-3 border border-gray-200 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
-              >
-                {/* Nama Barang (dapat diklik untuk edit) */}
-                <span
-                  className="flex-grow text-lg font-medium text-gray-700 cursor-pointer"
-                  onClick={() => handleOpenEditModal(barang)} // Klik nama untuk membuka modal edit
-                >
-                  {barang.name}
-                </span>
 
-                {/* Tombol Hapus */}
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleOpenConfirmDelete(barang.id)}
-                  className="ml-4"
+      <div className="flex item-center justify-center w-full pb-20">
+        <div className="w-full max-w-md">
+          {barangList.length === 0 ? (
+            <p className="text-center text-gray-500">Belum ada data barang.</p>
+          ) : (
+            <ul className="space-y-2">
+              {barangList.map((barang) => (
+                <li
+                  key={barang.id}
+                  className="flex items-center justify-between pb-2 px-2 border-b border-gray-600 hover:bg-gray-700 transition-colors duration-200"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                  <span className="sr-only">Hapus</span> {/* Screen reader only text */}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
+                  {/* Nama Barang (dapat diklik untuk edit) */}
+                  <span
+                    className="flex-grow text-base font-medium text-white cursor-pointer"
+                    onClick={() => handleOpenEditModal(barang)} // Klik nama untuk membuka modal edit
+                  >
+                    {barang.name}
+                  </span>
+
+                  {/* Tombol Hapus */}
+                  <Button
+                    // Ubah variant dari "destructive" menjadi "outline"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleOpenConfirmDelete(barang.id)}
+                    // Tambahkan atau modifikasi className untuk warna border dan teks
+                    className="ml-4 border-red-500 text-red-500 bg-transparent hover:bg-red-50 hover:text-red-600"
+                  >
+                    {/* Pastikan SVG juga menggunakan warna merah dari parent atau langsung */}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <span className="sr-only">Hapus</span> {/* Screen reader only text */}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       {/* Button Tambah di Kanan Bawah */}
@@ -158,7 +163,18 @@ export default function DataBarangPage() {
 
       {/* Modal Tambah/Edit Barang */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent
+          // Kelas yang direvisi untuk posisi atas dengan sedikit padding
+          className="sm:max-w-[425px]
+                 data-[state=open]:!slide-in-from-top
+                 data-[state=open]:!md:slide-in-from-bottom
+                 data-[state=open]:!top-[20%]
+                 data-[state=open]:!bottom-[unset]
+                 data-[state=open]:!md:top-[50%]
+                 data-[state=open]:!md:bottom-[unset]
+                 md:top-[50%] md:translate-y-[-50%] md:left-[50%] md:translate-x-[-50%]
+                 rounded-b-lg sm:rounded-lg rounded-t-lg"
+        >
           <DialogHeader>
             <DialogTitle>{editingBarangId ? 'Edit Barang' : 'Tambah Barang Baru'}</DialogTitle>
             <DialogDescription>
@@ -190,7 +206,17 @@ export default function DataBarangPage() {
 
       {/* Modal Konfirmasi Hapus */}
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          // Kelas yang direvisi untuk posisi atas dengan sedikit padding
+          className="data-[state=open]:!slide-in-from-top
+                         data-[state=open]:!md:slide-in-from-bottom
+                         data-[state=open]:!top-[20%]
+                         data-[state=open]:!bottom-[unset]
+                         data-[state=open]:!md:top-[50%]
+                         data-[state=open]:!md:bottom-[unset]
+                         md:top-[50%] md:translate-y-[-50%] md:left-[50%] md:translate-x-[-50%]
+                         rounded-b-lg sm:rounded-lg rounded-t-lg"
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
             <AlertDialogDescription>
