@@ -2,7 +2,6 @@
 import './globals.css'; // Import global CSS (termasuk Tailwind)
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'; // Contoh font
-import BottomNavbar from '../components/BottomNavbar'; 
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,11 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen pb-16"> {/* Tambahkan padding bottom sesuai tinggi navbar */}
+        <div className="flex flex-col min-h-screen"> {/* Tambahkan padding bottom sesuai tinggi navbar */}
           <main className="flex-grow bg-gray-900">
             {children}
           </main>
-          <BottomNavbar /> {/* Render navbar di sini */}
         </div>
       </body>
     </html>
