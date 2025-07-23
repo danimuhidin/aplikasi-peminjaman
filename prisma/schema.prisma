@@ -1,0 +1,45 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db" // Database kita akan menjadi file dev.db
+}
+
+// Model untuk Pengguna
+model User {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  name        String?
+  createdAt   DateTime      @default(now())
+  items       Item[]        // Seorang User bisa memiliki banyak Item
+  loans       Loan[]        // Seorang User bisa melakukan banyak Peminjaman
+}
+
+// Model untuk Barang
+model Item {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime      @default(now())
+  ownerId     String
+  owner       User          @relation(fields: [ownerId], references: [id])
+  loans       Loan[]        // Sebuah Item bisa memiliki banyak riwayat Peminjaman
+}
+
+// Model untuk Transaksi Peminjaman
+model Loan {
+  id          String        @id @default(cuid())
+  itemId      String
+  item        Item          @relation(fields: [itemId], references: [id])
+  borrowerId  String
+  borrower    User          @relation(fields: [borrowerId], references: [id])
+  startDate   DateTime
+  endDate     DateTime
+  status      String        @default("PENDING") // PENDING, APPROVED, RETURNED
+  createdAt   DateTime      @default(now())
+}
